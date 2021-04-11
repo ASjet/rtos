@@ -388,6 +388,11 @@
               <FileType>1</FileType>
               <FilePath>applications\main.c</FilePath>
             </File>
+            <File>
+              <FileName>printer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\printer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
