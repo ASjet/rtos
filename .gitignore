@@ -1,0 +1,5 @@
+build
+DebugConfig
+project.uvguix.*
+EventRecorderStub.scvd
+rtthread.bin
