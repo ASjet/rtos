@@ -37,12 +37,14 @@ typedef struct
     char *tasks[];
 } task_batch;
 
+
 static rt_mailbox_t print_queue = RT_NULL;
 static rt_mutex_t print = RT_NULL;
 static rt_sem_t print_queue_full = RT_NULL;
 static rt_sem_t print_queue_empty = RT_NULL;
 
 static rt_thread_t printer = RT_NULL;
+
 
 // 初始化批处理信息
 #define SENDER_AMOUNT 2
@@ -85,7 +87,7 @@ static void printerEntry(void *_Parameter)
 {
     print_task_t task = RT_NULL;
 
-    // 安装休眠打印机信号
+    // 安装挂起打印机信号
     rt_signal_install(SIGUSR2, printer_sig_handler);
     rt_signal_unmask(SIGUSR2);
 
@@ -174,7 +176,7 @@ static void senderEntry(void *_Parameter)
         }
         rt_sem_take(print_queue_empty, RT_WAITING_FOREVER);
 
-        rt_mb_send_wait(print_queue, (rt_uint32_t)(task_list + i), RT_WAITING_FOREVER);
+        rt_mb_send(print_queue, (rt_uint32_t)(task_list + i));
 
         rt_sem_release(print_queue_full);
         rt_mutex_release(print);
@@ -192,13 +194,13 @@ static void senderEntry(void *_Parameter)
 _exit:
     rt_free(task_list);
     --sender_barrier;
-    // 若全部任务线程均到达屏障则休眠打印机
+    // 若全部任务线程均到达屏障则挂起打印机
     if (sender_barrier == 0)
     {
         rt_thread_kill(printer, SIGUSR2);
 
 #ifdef DELETE_AFTER_PRINT
-        rt_thread_mdelay(WAIT_TIME * 10);
+        rt_thread_mdelay(WAIT_TIME);
         rt_thread_delete(printer);
 #endif
 
@@ -249,6 +251,8 @@ int printer_sample(void)
                                printerEntry, RT_NULL,
                                THREAD_STACK_SIZE,
                                THREAD_PRIORITY + 1, THREAD_TIMESLICE);
+    if (printer != RT_NULL)
+        rt_thread_startup(printer);
 
     sender1 = rt_thread_create("sender1",
                                senderEntry, RT_NULL,
@@ -264,8 +268,6 @@ int printer_sample(void)
     if (sender2 != RT_NULL)
         rt_thread_startup(sender2);
 
-    if (printer != RT_NULL)
-        rt_thread_startup(printer);
 
     return 0;
 }
