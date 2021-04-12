@@ -54,7 +54,7 @@ typedef struct
 {
     rt_size_t amount; // 总任务数量
     rt_size_t remain; // 剩余任务数量
-    char *tasks[];	  // 打印内容数组
+    char *tasks[];    // 打印内容数组
 } task_batch;
 ```
 
@@ -68,8 +68,8 @@ typedef struct
 static rt_mailbox_t print_queue;
 typedef struct
 {
-    char *content;		// 打印内容
-    rt_thread_t tid;	// 发送该任务的线程id
+    char *content;      // 打印内容
+    rt_thread_t tid;    // 发送该任务的线程id
 } print_task;
 typedef print_task *print_task_t;
 ```
@@ -89,7 +89,7 @@ while (1)
     // 从打印队列中获取一个任务
     if (rt_mb_recv(print_queue, (rt_uint32_t *)&task, RT_WAITING_FOREVER) != RT_EOK)
         rt_kprintf("Printer: Failed to receive print task mail.\n");
-	// 释放打印队列空信号量
+    // 释放打印队列空信号量
     rt_sem_release(print_queue_empty);
 
     // 模拟打印
@@ -201,7 +201,7 @@ sender线程发送完所有任务后，循环等待任务完成，完成后释�
 
 在msh中运行实例，输入
 
-```
+```sh
 msh>printer_sample
 ```
 
