@@ -1,4 +1,4 @@
-# RT-Thread [打印机队列实例](./applications/printer.c)<img src="https://img.shields.io/badge/Platform-STM32F103-yellowgreen"/><img src="https://img.shields.io/badge/build-passed-brightgreen"/>
+# RT-Thread [打印机队列实例](./applications/printer.c)<img src="http://disk.itfs127.com/img/github/rtos/build-passed.svg"/>
 - [摘要](#摘要)
 - [开发环境](#开发环境)
   - [仿真平台](#仿真平台)
@@ -205,5 +205,5 @@ sender线程发送完所有任务后，循环等待任务完成，完成后释�
 msh>printer_sample
 ```
 
-<img src="http://disk.itfs127.com/img/printer_sample_screenshot.png" align="left"/>
+<img src="http://disk.itfs127.com/img/github/rtos/printer_sample_screenshot.png" align="left"/>
 
