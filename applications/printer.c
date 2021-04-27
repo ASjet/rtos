@@ -40,6 +40,7 @@ typedef struct
 
 static rt_mailbox_t print_queue = RT_NULL;
 static rt_mutex_t print = RT_NULL;
+static rt_mutex_t barrier = RT_NULL;
 static rt_sem_t print_queue_full = RT_NULL;
 static rt_sem_t print_queue_empty = RT_NULL;
 
@@ -193,7 +194,13 @@ static void senderEntry(void *_Parameter)
 
 _exit:
     rt_free(task_list);
+    if(rt_mutex_take(barrier, RT_WAITING_FOREVER) != RT_EOK)
+    {
+        rt_kprintf("Error: Deadlock.\n");
+        return ;
+    }
     --sender_barrier;
+    rt_mutex_release(barrier);
     // 若全部任务线程均到达屏障则挂起打印机
     if (sender_barrier == 0)
     {
