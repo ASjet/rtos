@@ -148,6 +148,11 @@ while (info->remain > 0)
 
 _exit:
 rt_free(task_list);
+if(rt_mutex_take(barrier, RT_WAITING_FOREVER) != RT_EOK)
+{
+    rt_kprintf("Error: Deadlock.\n");
+    return ;
+}
 --sender_barrier;
 // 若全部任务线程均到达屏障则挂起printer线程
 if (sender_barrier == 0)
